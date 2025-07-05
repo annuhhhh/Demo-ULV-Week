@@ -1,125 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Workout Finder - Tailored Exercises for You</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitPlan Pro - Personalized Workout Plans</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div class="parallax-bg"></div>
-  <!-- Header -->
   <header>
-    <div class="container header-container">
-      <div class="logo">WorkoutFinder</div>
+    <div class="container">
+      <div class="logo">
+        <i class="fas fa-dumbbell"></i>
+        <h1>FitPlan Pro</h1>
+      </div>
       <nav>
-        <ul class="nav-list">
-          <li><a href="#features">Features</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="#cta">Get Started</a></li>
-        </ul>
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#ai-workout-generator">AI Generator</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
+  <section id="home" class="hero">
     <div class="container">
-      <h1>Unlock Your Best Self</h1>
-      <p>Transform your fitness journey with AI-powered, science-backed workout plans tailored to your unique goals, lifestyle, and preferences. Whether you're a beginner or a seasoned athlete, WorkoutFinder helps you break plateaus, stay motivated, and achieve real results—faster and smarter.</p>
-      <a href="#cta" class="btn-primary">Start Your Transformation</a>
+      <div class="hero-content">
+        <h2>Transform Your Fitness Journey</h2>
+        <p>Get personalized workout plans tailored to your goals, equipment, and schedule. Start your transformation today!</p>
+        <div class="hero-buttons">
+          <button class="cta-btn" onclick="scrollToForm()">
+            <i class="fas fa-play"></i>
+            Get Your Plan
+          </button>
+          <button class="cta-btn secondary" onclick="scrollToAiGenerator()">
+            <i class="fas fa-robot"></i>
+            Try AI Generator
+          </button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="floating-card">
+          <i class="fas fa-heartbeat"></i>
+          <h4>Personalized</h4>
+          <p>Custom plans for your goals</p>
+        </div>
+        <div class="floating-card">
+          <i class="fas fa-clock"></i>
+          <h4>Flexible</h4>
+          <p>Workouts that fit your schedule</p>
+        </div>
+        <div class="floating-card">
+          <i class="fas fa-trophy"></i>
+          <h4>Effective</h4>
+          <p>Proven results guaranteed</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Features Section -->
   <section id="features" class="features">
     <div class="container">
-      <h2>Why Choose WorkoutFinder?</h2>
-      <p>We combine cutting-edge technology with proven fitness strategies to deliver a truly personalized experience. Here's what sets us apart:</p>
-      <ul class="features-list">
-        <li>
-          <strong>Personalized Recommendations</strong><br>
-          Our smart algorithm analyzes your goals, fitness level, and preferences to suggest the perfect exercises and routines for you.
-        </li>
-        <li>
-          <strong>Goal-Based Plans</strong><br>
-          Whether you want to build muscle, lose weight, or improve flexibility, we create a plan that adapts as you progress.
-        </li>
-        <li>
-          <strong>Expert Guidance</strong><br>
-          Access a library of video tutorials and tips from certified trainers to ensure you perform every move safely and effectively.
-        </li>
-        <li>
-          <strong>Progress Tracking</strong><br>
-          Visualize your achievements, set new milestones, and celebrate every win with our intuitive progress dashboard.
-        </li>
-        <li>
-          <strong>Community Support</strong><br>
-          Join a vibrant community, share your journey, and get inspired by others who are crushing their goals.
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="testimonials">
-    <div class="container">
-      <h2>Success Stories</h2>
-      <p>See how WorkoutFinder is changing lives around the world.</p>
-      <div class="testimonials-list">
-        <blockquote>
-          <p>"I never thought I could stick to a routine, but WorkoutFinder made it easy and fun. I've lost 20 pounds and gained so much confidence!"</p>
-          <footer>- Alex, 29, New York</footer>
-        </blockquote>
-        <blockquote>
-          <p>"The personalized plans are a game changer. I'm stronger, healthier, and more motivated than ever before."</p>
-          <footer>- Jamie, 34, London</footer>
-        </blockquote>
-        <blockquote>
-          <p>"I love the community and the progress tracking. Every milestone feels like a real achievement!"</p>
-          <footer>- Taylor, 41, Sydney</footer>
-        </blockquote>
-        <blockquote>
-          <p>"The expert videos helped me perfect my form and avoid injury. Highly recommend for anyone serious about results."</p>
-          <footer>- Morgan, 25, Toronto</footer>
-        </blockquote>
+      <h3>Why Choose FitPlan Pro?</h3>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-cogs"></i>
+          <h4>Smart Algorithm</h4>
+          <p>Advanced AI creates plans based on your unique profile and progress</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-mobile-alt"></i>
+          <h4>Track Progress</h4>
+          <p>Monitor your fitness journey with detailed analytics and insights</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-users"></i>
+          <h4>Community Support</h4>
+          <p>Connect with like-minded fitness enthusiasts for motivation</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-shield-alt"></i>
+          <h4>Safe & Effective</h4>
+          <p>All plans are designed by certified fitness professionals</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section id="cta" class="cta">
+  <section class="workout-generator">
     <div class="container">
-      <h2>Ready to Take the First Step?</h2>
-      <p>Sign up now and get instant access to your personalized workout plan, expert resources, and a supportive community. Your best self is just a click away—let's make it happen together!</p>
-      <a href="#" class="btn-primary">Join WorkoutFinder Free</a>
+      <h3>Create Your Personalized Workout Plan</h3>
+      <p>Fill out the form below to get a custom workout plan tailored to your needs</p>
+      
+      <form id="workoutForm" class="workout-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fitnessLevel">Fitness Level</label>
+            <select id="fitnessLevel" required>
+              <option value="">Select your level</option>
+              <option value="beginner">Beginner (0-6 months)</option>
+              <option value="intermediate">Intermediate (6 months - 2 years)</option>
+              <option value="advanced">Advanced (2+ years)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="primaryGoal">Primary Goal</label>
+            <select id="primaryGoal" required>
+              <option value="">Select your goal</option>
+              <option value="weightLoss">Weight Loss</option>
+              <option value="muscleGain">Muscle Gain</option>
+              <option value="strength">Strength Building</option>
+              <option value="endurance">Endurance</option>
+              <option value="general">General Fitness</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="workoutDays">Days per Week</label>
+            <select id="workoutDays" required>
+              <option value="">Select frequency</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+              <option value="6">6 days</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="workoutDuration">Workout Duration</label>
+            <select id="workoutDuration" required>
+              <option value="">Select duration</option>
+              <option value="30">30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">60 minutes</option>
+              <option value="90">90 minutes</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Available Equipment</label>
+            <div class="equipment-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" value="bodyweight">
+                <span>Bodyweight Only</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="dumbbells">
+                <span>Dumbbells</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="barbell">
+                <span>Barbell</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="resistance-bands">
+                <span>Resistance Bands</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="pull-up-bar">
+                <span>Pull-up Bar</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="gym-access">
+                <span>Full Gym Access</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="focusAreas">Focus Areas (Optional)</label>
+            <div class="focus-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" value="upper-body">
+                <span>Upper Body</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="lower-body">
+                <span>Lower Body</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="core">
+                <span>Core</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="cardio">
+                <span>Cardio</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="flexibility">
+                <span>Flexibility</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="generate-btn">
+          <i class="fas fa-magic"></i>
+          Generate My Workout Plan
+        </button>
+      </form>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container footer-container">
-      <div class="logo">WorkoutFinder</div>
-      <nav>
-        <ul class="nav-list">
-          <li><a href="#features">Features</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="#cta">Get Started</a></li>
-        </ul>
-      </nav>
-      <div class="social-media">
-        <a href="#" aria-label="Instagram">Instagram</a>
-        <a href="#" aria-label="Twitter">Twitter</a>
-        <a href="#" aria-label="Facebook">Facebook</a>
+  <section id="ai-workout-generator" class="ai-workout-generator">
+    <div class="container">
+      <div class="ai-header">
+        <h3>
+          <i class="fas fa-robot"></i>
+          AI-Powered Workout Generator
+        </h3>
+        <p>Get a personalized workout plan created by advanced AI, tailored to your specific needs and preferences</p>
       </div>
-      <div class="copyright">&copy; 2024 WorkoutFinder. All rights reserved.</div>
+      
+      <form id="aiWorkoutForm" class="ai-workout-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="aiFitnessGoal">Fitness Goal</label>
+            <select id="aiFitnessGoal" required>
+              <option value="">Select your primary goal</option>
+              <option value="weight-loss">Weight Loss & Fat Burning</option>
+              <option value="muscle-building">Muscle Building & Hypertrophy</option>
+              <option value="strength-training">Strength & Power</option>
+              <option value="endurance">Cardiovascular Endurance</option>
+              <option value="functional-fitness">Functional Fitness & Mobility</option>
+              <option value="sports-performance">Sports Performance</option>
+              <option value="general-wellness">General Wellness & Maintenance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="aiWorkoutDays">Days per Week</label>
+            <select id="aiWorkoutDays" required>
+              <option value="">Select frequency</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+              <option value="6">6 days</option>
+              <option value="7">7 days (active recovery included)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="aiFitnessLevel">Current Fitness Level</label>
+            <select id="aiFitnessLevel" required>
+              <option value="">Select your level</option>
+              <option value="complete-beginner">Complete Beginner (New to exercise)</option>
+              <option value="beginner">Beginner (0-6 months experience)</option>
+              <option value="intermediate">Intermediate (6 months - 2 years)</option>
+              <option value="advanced">Advanced (2+ years experience)</option>
+              <option value="elite">Elite (Competitive athlete)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="aiWorkoutDuration">Preferred Workout Duration</label>
+            <select id="aiWorkoutDuration" required>
+              <option value="">Select duration</option>
+              <option value="20">20 minutes (Quick workouts)</option>
+              <option value="30">30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">60 minutes</option>
+              <option value="75">75 minutes</option>
+              <option value="90">90 minutes (Extended sessions)</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Available Equipment</label>
+            <div class="equipment-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" value="bodyweight-only">
+                <span>Bodyweight Only</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="dumbbells">
+                <span>Dumbbells</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="barbell">
+                <span>Barbell & Plates</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="resistance-bands">
+                <span>Resistance Bands</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="kettlebells">
+                <span>Kettlebells</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="pull-up-bar">
+                <span>Pull-up Bar</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="cardio-equipment">
+                <span>Cardio Equipment (Treadmill, Bike, etc.)</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="full-gym">
+                <span>Full Gym Access</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="aiLimitations">Limitations or Preferences</label>
+            <textarea id="aiLimitations" rows="4" placeholder="Tell us about any injuries, limitations, or specific preferences (e.g., 'I have a knee injury', 'I prefer low-impact exercises', 'I want to focus on upper body', 'I'm pregnant', etc.)"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="aiAdditionalInfo">Additional Information (Optional)</label>
+            <textarea id="aiAdditionalInfo" rows="3" placeholder="Any other details about your fitness journey, experience level, or specific goals you'd like us to consider"></textarea>
+          </div>
+        </div>
+
+        <div class="api-key-section">
+          <div class="form-group">
+            <label for="openaiApiKey">OpenAI API Key</label>
+            <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key" required>
+            <small class="help-text">
+              <i class="fas fa-info-circle"></i>
+              Your API key is used only to generate the workout plan and is not stored. 
+              <a href="https://platform.openai.com/api-keys" target="_blank">Get your API key here</a>
+            </small>
+          </div>
+        </div>
+
+        <button type="submit" class="ai-generate-btn" id="aiGenerateBtn">
+          <i class="fas fa-brain"></i>
+          <span class="btn-text">Generate AI Workout Plan</span>
+          <div class="spinner hidden">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <section id="aiResults" class="ai-results hidden">
+    <div class="container">
+      <div class="ai-results-header">
+        <h3>
+          <i class="fas fa-robot"></i>
+          Your AI-Generated Workout Plan
+        </h3>
+        <p>Personalized just for you based on your goals and preferences</p>
+      </div>
+      
+      <div class="ai-plan-summary">
+        <div class="summary-card">
+          <i class="fas fa-bullseye"></i>
+          <h4>Goal</h4>
+          <p id="aiGoalText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-calendar-alt"></i>
+          <h4>Schedule</h4>
+          <p id="aiScheduleText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-dumbbell"></i>
+          <h4>Equipment</h4>
+          <p id="aiEquipmentText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-user-check"></i>
+          <h4>Level</h4>
+          <p id="aiLevelText"></p>
+        </div>
+      </div>
+      
+      <div id="aiWorkoutPlan" class="ai-workout-plan">
+        <!-- AI-generated workout plan will be displayed here -->
+      </div>
+
+      <div class="ai-action-buttons">
+        <button class="btn-secondary" onclick="downloadAiPlan()">
+          <i class="fas fa-download"></i>
+          Download Plan
+        </button>
+        <button class="btn-primary" onclick="regenerateAiPlan()">
+          <i class="fas fa-redo"></i>
+          Regenerate with AI
+        </button>
+        <button class="btn-tertiary" onclick="shareAiPlan()">
+          <i class="fas fa-share"></i>
+          Share Plan
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="results" class="results hidden">
+    <div class="container">
+      <h3>Your Personalized Workout Plan</h3>
+      <div class="plan-summary">
+        <div class="summary-card">
+          <i class="fas fa-calendar"></i>
+          <h4>Schedule</h4>
+          <p id="scheduleText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-bullseye"></i>
+          <h4>Goal</h4>
+          <p id="goalText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-dumbbell"></i>
+          <h4>Equipment</h4>
+          <p id="equipmentText"></p>
+        </div>
+      </div>
+      
+      <div id="workoutPlan" class="workout-plan">
+        <!-- Workout plan will be generated here -->
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-secondary" onclick="downloadPlan()">
+          <i class="fas fa-download"></i>
+          Download PDF
+        </button>
+        <button class="btn-primary" onclick="regeneratePlan()">
+          <i class="fas fa-redo"></i>
+          Regenerate Plan
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="container">
+      <h3>About FitPlan Pro</h3>
+      <p>We believe everyone deserves access to personalized fitness guidance. Our AI-powered platform creates custom workout plans that adapt to your progress, ensuring you stay motivated and achieve your goals.</p>
+      <div class="stats">
+        <div class="stat">
+          <h4>10,000+</h4>
+          <p>Active Users</p>
+        </div>
+        <div class="stat">
+          <h4>95%</h4>
+          <p>Success Rate</p>
+        </div>
+        <div class="stat">
+          <h4>50+</h4>
+          <p>Expert Trainers</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>FitPlan Pro</h4>
+          <p>Transform your fitness journey with personalized workout plans.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p><i class="fas fa-envelope"></i> hello@fitplanpro.com</p>
+          <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 FitPlan Pro. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
-

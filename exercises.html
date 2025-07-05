@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercises Library | WorkoutFinder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="parallax-bg"></div>
+  <header>
+    <div class="container header-container">
+      <div class="logo">WorkoutFinder</div>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="exercises.html">Exercises Library</a></li>
+          <li><a href="app.html">Personalized App</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <section class="features">
+    <div class="container">
+      <h2>Exercises Library</h2>
+      <form class="exercise-filter" style="margin-bottom:2rem;">
+        <label for="muscle">Muscle Group:</label>
+        <select id="muscle" name="muscle">
+          <option value="all">All</option>
+          <option value="glutes">Glutes</option>
+          <option value="chest">Chest</option>
+          <option value="back">Back</option>
+          <option value="arms">Arms</option>
+          <option value="legs">Legs</option>
+          <option value="shoulders">Shoulders</option>
+        </select>
+        <label for="goal">Goal:</label>
+        <select id="goal" name="goal">
+          <option value="all">All</option>
+          <option value="build-muscle">Build Muscle</option>
+          <option value="lose-fat">Lose Fat</option>
+          <option value="strength">Strength</option>
+          <option value="endurance">Endurance</option>
+        </select>
+        <button type="submit" class="btn-primary">Filter</button>
+      </form>
+      <div class="exercises-list">
+        <div class="exercise-card">
+          <h3>Hip Thrust</h3>
+          <p><strong>Muscle:</strong> Glutes</p>
+          <p><strong>Goal:</strong> Build Muscle, Strength</p>
+          <p>One of the best exercises for glute development. Focus on squeezing at the top and keeping your core tight.</p>
+        </div>
+        <div class="exercise-card">
+          <h3>Push-Up</h3>
+          <p><strong>Muscle:</strong> Chest, Arms</p>
+          <p><strong>Goal:</strong> Strength, Endurance</p>
+          <p>A classic bodyweight exercise for upper body strength. Keep your body in a straight line and lower with control.</p>
+        </div>
+        <div class="exercise-card">
+          <h3>Deadlift</h3>
+          <p><strong>Muscle:</strong> Back, Legs</p>
+          <p><strong>Goal:</strong> Build Muscle, Strength</p>
+          <p>Targets the entire posterior chain. Maintain a flat back and drive through your heels.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container footer-container">
+      <div class="logo">WorkoutFinder</div>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="exercises.html">Exercises Library</a></li>
+          <li><a href="app.html">Personalized App</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="social-media">
+        <a href="#" aria-label="Instagram">Instagram</a>
+        <a href="#" aria-label="Twitter">Twitter</a>
+        <a href="#" aria-label="Facebook">Facebook</a>
+      </div>
+      <div class="copyright">&copy; 2024 WorkoutFinder. All rights reserved.</div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html> 

@@ -8,8 +8,8 @@
   --indigo-dye: #18435A;
   --text: #f4f8fb;
   --border-radius: 18px;
-  --glass-bg: rgba(62, 146, 204, 0.30); /* semi-transparent celestial blue */
-  --glass-border: rgba(42, 98, 143, 0.25); /* lapis lazuli border */
+  --glass-bg: rgba(62, 146, 204, 0.18); /* more subtle glass */
+  --glass-border: rgba(42, 98, 143, 0.18);
 }
 
 * {
@@ -21,7 +21,7 @@
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
   color: var(--text);
-  background: linear-gradient(135deg, var(--celestial-blue) 0%, var(--lapis-lazuli) 40%, var(--prussian-blue2) 100%);
+  background: var(--prussian-blue2);
   min-height: 100vh;
   line-height: 1.7;
   overflow-x: hidden;
@@ -29,13 +29,7 @@ body {
 
 /* Parallax background */
 .parallax-bg {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 120vh;
-  z-index: -1;
-  background: linear-gradient(120deg, var(--celestial-blue) 0%, var(--lapis-lazuli) 50%, var(--indigo-dye) 100%);
-  background-attachment: fixed;
-  will-change: transform;
-  transition: background 0.5s;
+  display: none;
 }
 
 .container {
@@ -62,7 +56,14 @@ header {
   font-size: 2rem;
   color: var(--celestial-blue);
   letter-spacing: 2px;
-  animation: floatLogo 2.5s ease-in-out infinite alternate;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.logo svg {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: middle;
 }
 nav .nav-list {
   list-style: none;
@@ -75,6 +76,9 @@ nav .nav-list li a {
   font-weight: 500;
   font-size: 1.1rem;
   transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 nav .nav-list li a:hover {
   color: var(--celestial-blue);
@@ -85,7 +89,7 @@ nav .nav-list li a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--prussian-blue1);
   padding: 7rem 0 6rem 0;
 }
 .hero .container {
@@ -94,22 +98,22 @@ nav .nav-list li a:hover {
   align-items: center;
   background: var(--glass-bg);
   border-radius: var(--border-radius);
-  box-shadow: 0 8px 32px 0 rgba(42, 98, 143, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(42, 98, 143, 0.10);
   border: 1.5px solid var(--glass-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 4rem 2rem;
   animation: fadeInUp 1.2s ease;
 }
 .hero h1 {
   font-size: 3.2rem;
   margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, var(--celestial-blue), var(--lapis-lazuli), var(--indigo-dye));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  animation: floatHero 3s ease-in-out infinite alternate;
+  color: var(--celestial-blue);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  text-fill-color: initial;
 }
 .hero p {
   font-size: 1.4rem;
@@ -118,7 +122,7 @@ nav .nav-list li a:hover {
   animation: fadeIn 2s 0.5s backwards;
 }
 .btn-primary {
-  background: linear-gradient(90deg, var(--celestial-blue), var(--lapis-lazuli));
+  background: var(--celestial-blue);
   color: #fff;
   padding: 1rem 2.5rem;
   border: none;
@@ -132,7 +136,7 @@ nav .nav-list li a:hover {
   animation: fadeIn 1.5s 0.5s backwards;
 }
 .btn-primary:hover {
-  background: linear-gradient(90deg, var(--indigo-dye), var(--celestial-blue));
+  background: var(--lapis-lazuli);
   color: #fff;
   box-shadow: 0 4px 16px rgba(42, 98, 143, 0.18);
   transform: translateY(-3px) scale(1.04);
@@ -153,15 +157,15 @@ section:nth-of-type(5) { animation-delay: 0.8s; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--prussian-blue2);
 }
 .features .container, .testimonials .container, .cta .container {
   background: var(--glass-bg);
   border-radius: var(--border-radius);
   box-shadow: 0 8px 32px 0 rgba(42, 98, 143, 0.10);
   border: 1.5px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 3.5rem 2rem;
   text-align: center;
   animation: fadeInUp 1.2s ease;
@@ -169,11 +173,12 @@ section:nth-of-type(5) { animation-delay: 0.8s; }
 .features h2, .testimonials h2, .cta h2 {
   font-size: 2.3rem;
   margin-bottom: 1.2rem;
-  background: linear-gradient(90deg, var(--celestial-blue), var(--lapis-lazuli), var(--indigo-dye));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+  color: var(--celestial-blue);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  text-fill-color: initial;
   letter-spacing: 1px;
 }
 .features p, .testimonials p, .cta p {
@@ -202,6 +207,16 @@ section:nth-of-type(5) { animation-delay: 0.8s; }
   -webkit-backdrop-filter: blur(6px);
   animation: fadeInUp 1.2s ease;
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.features-list li svg, .testimonials-list blockquote svg {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+  color: var(--celestial-blue);
 }
 .features-list li:hover, .testimonials-list blockquote:hover {
   transform: scale(1.04) translateY(-6px);
@@ -237,6 +252,14 @@ footer {
 footer .logo {
   font-size: 1.3rem;
   color: var(--celestial-blue);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+footer .logo svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  vertical-align: middle;
 }
 footer nav .nav-list {
   gap: 2rem;
@@ -257,6 +280,83 @@ footer nav .nav-list {
 .copyright {
   font-size: 1rem;
   color: var(--lapis-lazuli);
+}
+
+/* Weekly Plan Generator Styles */
+#weekly-plan .container {
+  max-width: 700px;
+}
+#weekly-plan form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(42, 98, 143, 0.08);
+}
+#weekly-plan label {
+  font-weight: 500;
+  color: var(--celestial-blue);
+  margin-bottom: 0.2rem;
+}
+#weekly-plan input, #weekly-plan select, #weekly-plan textarea {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.12);
+  color: var(--prussian-blue1);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+#weekly-plan input:focus, #weekly-plan select:focus, #weekly-plan textarea:focus {
+  outline: 2px solid var(--celestial-blue);
+  background: #fff;
+}
+#weekly-plan .btn-primary {
+  width: fit-content;
+  align-self: flex-start;
+}
+#plan-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--celestial-blue);
+}
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+.spinner .path {
+  stroke: var(--celestial-blue);
+  stroke-linecap: round;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+#plan-error {
+  font-weight: bold;
+}
+.plan-output {
+  background: rgba(255,255,255,0.13);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  color: var(--prussian-blue1);
+  font-size: 1.08rem;
+  box-shadow: 0 2px 8px rgba(42, 98, 143, 0.08);
+  overflow-x: auto;
+  line-height: 1.7;
+}
+.plan-output h3, .plan-output h4, .plan-output strong {
+  color: var(--celestial-blue);
+}
+@media (max-width: 600px) {
+  #weekly-plan .container, .plan-output {
+    padding: 1rem 0.5rem;
+  }
+  #weekly-plan form {
+    padding: 1rem 0.5rem;
+  }
 }
 
 @media (max-width: 900px) {
@@ -303,12 +403,4 @@ footer nav .nav-list {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-@keyframes floatHero {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-10px); }
-}
-@keyframes floatLogo {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-6px); }
 } 
