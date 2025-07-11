@@ -486,9 +486,7 @@ function validateAiForm(formData) {
     errors.push('Please select at least one piece of equipment');
   }
   
-  if (!formData.apiKey) {
-    errors.push('Please enter your OpenAI API key');
-  }
+
   
   return errors;
 }
@@ -609,36 +607,36 @@ Please provide a comprehensive, well-structured workout plan that the user can f
 }
 
 async function callOpenAI(apiKey, prompt) {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('/api/generate-workout', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert fitness trainer and workout plan creator. You create detailed, personalized workout plans that are safe, effective, and tailored to individual needs. Always provide practical, actionable advice.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      max_tokens: 3000,
-      temperature: 0.7
+      formData: {
+        aiFitnessGoal: document.getElementById('aiFitnessGoal').value,
+        aiWorkoutDays: document.getElementById('aiWorkoutDays').value,
+        aiFitnessLevel: document.getElementById('aiFitnessLevel').value,
+        aiWorkoutDuration: document.getElementById('aiWorkoutDuration').value,
+        aiEquipment: getSelectedAiEquipment(),
+        aiInjuries: document.getElementById('aiLimitations').value,
+        aiPreferences: document.getElementById('aiAdditionalInfo').value
+      }
     })
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(`OpenAI API Error: ${errorData.error?.message || 'Unknown error'}`);
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    throw new Error('Invalid server response. Please try again later.');
   }
 
-  const data = await response.json();
-  return data.choices[0].message.content;
+  if (!response.ok) {
+    throw new Error(data?.error || `HTTP error! status: ${response.status}`);
+  }
+
+  return data.workoutPlan;
 }
 
 async function handleAiFormSubmit(e) {
@@ -651,8 +649,7 @@ async function handleAiFormSubmit(e) {
     workoutDuration: document.getElementById('aiWorkoutDuration').value,
     equipment: getSelectedAiEquipment(),
     limitations: document.getElementById('aiLimitations').value.trim(),
-    additionalInfo: document.getElementById('aiAdditionalInfo').value.trim(),
-    apiKey: document.getElementById('openaiApiKey').value.trim()
+    additionalInfo: document.getElementById('aiAdditionalInfo').value.trim()
   };
 
   // Validate form
@@ -670,11 +667,8 @@ async function handleAiFormSubmit(e) {
   showMessage('Generating your personalized workout plan...', 'info');
 
   try {
-    // Create the prompt
-    const prompt = createOpenAIPrompt(formData);
-    
-    // Call OpenAI API
-    const aiResponse = await callOpenAI(formData.apiKey, prompt);
+    // Call backend API
+    const aiResponse = await callOpenAI(null, null);
     
     // Display results
     displayAiWorkoutPlan(formData, aiResponse);
@@ -755,7 +749,6 @@ function regenerateAiPlan() {
   document.getElementById('aiWorkoutDuration').value = lastAiFormData.workoutDuration;
   document.getElementById('aiLimitations').value = lastAiFormData.limitations;
   document.getElementById('aiAdditionalInfo').value = lastAiFormData.additionalInfo;
-  document.getElementById('openaiApiKey').value = lastAiFormData.apiKey;
 
   // Re-check equipment boxes
   const checkboxes = document.querySelectorAll('#aiWorkoutForm input[type="checkbox"][value]');
@@ -874,11 +867,10 @@ async function handleWeeklyFormSubmit(e) {
     goal: document.getElementById('weeklyGoal').value,
     days: document.getElementById('weeklyDays').value,
     equipment: getSelectedWeeklyEquipment(),
-    preferences: document.getElementById('weeklyPreferences').value.trim(),
-    apiKey: document.getElementById('weeklyApiKey').value.trim()
+    preferences: document.getElementById('weeklyPreferences').value.trim()
   };
   // Basic validation
-  if (!formData.goal || !formData.days || !formData.apiKey) {
+  if (!formData.goal || !formData.days) {
     showMessage('Please fill in all required fields.', 'error');
     return;
   }
@@ -886,9 +878,32 @@ async function handleWeeklyFormSubmit(e) {
   setWeeklyLoadingState(true);
   showMessage('Generating your weekly workout plan...', 'info');
   try {
-    const prompt = createWeeklyOpenAIPrompt(formData);
-    const aiResponse = await callOpenAI(formData.apiKey, prompt);
-    displayWeeklyWorkoutPlan(formData, aiResponse);
+    const response = await fetch('/api/generate-weekly-workout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        formData: {
+          weeklyGoal: formData.goal,
+          weeklyDays: formData.days,
+          weeklyLevel: document.getElementById('weeklyLevel')?.value || 'beginner',
+          weeklyDuration: document.getElementById('weeklyDuration')?.value || '60',
+          weeklyEquipment: formData.equipment,
+          weeklyFocus: document.querySelectorAll('.weekly-focus:checked') ? 
+            Array.from(document.querySelectorAll('.weekly-focus:checked')).map(cb => cb.value) : [],
+          weeklySchedule: formData.preferences
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    displayWeeklyWorkoutPlan(formData, data.weeklyPlan);
     showMessage('Weekly workout plan generated!', 'success');
   } catch (error) {
     showMessage(`Error: ${error.message}`, 'error');
