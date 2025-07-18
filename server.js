@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5501;
+const PORT = process.env.PORT || 5502;
 
 // Middleware
 app.use(cors({
@@ -200,7 +200,7 @@ app.get('/api/health', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 FitPlan Pro server running on port ${5501}`);
+  console.log(`🚀 FitPlan Pro server running on port ${5502}`);
   console.log(`📱 OpenAI API configured: ${!!process.env.OPENAI_API_KEY}`);
-  console.log(`🌐 Visit: http://localhost:${5501}}`);
+  console.log(`🌐 Visit: http://localhost:${5502}}`);
 }); 

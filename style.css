@@ -167,8 +167,8 @@ nav a:hover::after {
 .hero-image {
   position: relative;
   height: 400px;
+  min-height: 300px;
 }
-
 .floating-card {
   position: absolute;
   background: rgba(255, 255, 255, 0.1);
@@ -178,23 +178,27 @@ nav a:hover::after {
   padding: 1.5rem;
   text-align: center;
   animation: float 6s ease-in-out infinite;
+  min-width: 180px;
+  max-width: 220px;
+  z-index: 1;
 }
-
 .floating-card:nth-child(1) {
-  top: 0;
-  left: 0;
+  top: 20px;
+  left: 10px;
   animation-delay: 0s;
 }
-
 .floating-card:nth-child(2) {
-  top: 50%;
-  right: 0;
+  top: 20px;
+  right: 10px;
+  left: auto;
+  transform: none;
   animation-delay: 2s;
+  z-index: 2;
 }
-
 .floating-card:nth-child(3) {
-  bottom: 0;
+  top: 240px;
   left: 50%;
+  transform: translateX(-50%);
   animation-delay: 4s;
 }
 
@@ -264,122 +268,6 @@ nav a:hover::after {
   color: var(--text-light);
 }
 
-/* Workout Generator */
-.workout-generator {
-  padding: 6rem 0;
-  background: var(--bg-light);
-}
-
-.workout-generator h3 {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--text-dark);
-}
-
-.workout-generator > .container > p {
-  text-align: center;
-  font-size: 1.1rem;
-  color: var(--text-light);
-  margin-bottom: 3rem;
-}
-
-.workout-form {
-  max-width: 800px;
-  margin: 0 auto;
-  background: var(--bg-white);
-  padding: 3rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-.form-group label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-dark);
-}
-
-.form-group select {
-  padding: 0.75rem;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius);
-  font-size: 1rem;
-  transition: var(--transition);
-  background: var(--bg-white);
-}
-
-.form-group select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.equipment-grid,
-.focus-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: var(--radius);
-  transition: var(--transition);
-}
-
-.checkbox-label:hover {
-  background: var(--bg-light);
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--primary-color);
-}
-
-.generate-btn {
-  grid-column: 1 / -1;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: var(--radius);
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-}
-
-.generate-btn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
 
 /* Results Section */
 .results {
@@ -1118,5 +1006,102 @@ footer {
   
   .ai-workout-plan .exercise-details {
     text-align: left;
+  }
+}
+
+/* Improve AI generator equipment section spacing */
+.ai-workout-form .equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.ai-workout-form .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ai-workout-form .checkbox-label:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.ai-workout-form .checkbox-label input[type="checkbox"] {
+  accent-color: var(--accent-color);
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* Add a wrapper for the centered floating card */
+.floating-center-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 240px;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.floating-center-wrapper .floating-card {
+  position: static;
+  min-width: 180px;
+  max-width: 220px;
+  animation-delay: 4s;
+}
+
+/* Responsive: 2 columns on tablets, 1 on mobile */
+@media (max-width: 900px) {
+  .hero-image {
+    height: 350px;
+  }
+  .floating-card {
+    min-width: 140px;
+    max-width: 180px;
+    padding: 1rem;
+  }
+  .floating-card:nth-child(1) {
+    top: 10px;
+    left: 5px;
+  }
+  .floating-card:nth-child(2) {
+    top: 10px;
+    right: 5px;
+    left: auto;
+    transform: none;
+  }
+  .floating-card:nth-child(3) {
+    top: 170px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 600px) {
+  .hero-image {
+    height: 300px;
+  }
+  .floating-card {
+    min-width: 110px;
+    max-width: 140px;
+    padding: 0.75rem;
+  }
+  .floating-card:nth-child(1) {
+    top: 0;
+    left: 0;
+  }
+  .floating-card:nth-child(2) {
+    top: 0;
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+  .floating-card:nth-child(3) {
+    top: 130px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

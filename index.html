@@ -31,13 +31,9 @@
         <h2>Transform Your Fitness Journey</h2>
         <p>Get personalized workout plans tailored to your goals, equipment, and schedule. Start your transformation today!</p>
         <div class="hero-buttons">
-          <button class="cta-btn" onclick="scrollToForm()">
+          <button class="cta-btn" onclick="scrollToAiGenerator()">
             <i class="fas fa-play"></i>
             Get Your Plan
-          </button>
-          <button class="cta-btn secondary" onclick="scrollToAiGenerator()">
-            <i class="fas fa-robot"></i>
-            Try AI Generator
           </button>
         </div>
       </div>
@@ -48,14 +44,16 @@
           <p>Custom plans for your goals</p>
         </div>
         <div class="floating-card">
-          <i class="fas fa-clock"></i>
-          <h4>Flexible</h4>
-          <p>Workouts that fit your schedule</p>
-        </div>
-        <div class="floating-card">
           <i class="fas fa-trophy"></i>
           <h4>Effective</h4>
           <p>Proven results guaranteed</p>
+        </div>
+        <div class="floating-center-wrapper">
+          <div class="floating-card">
+            <i class="fas fa-clock"></i>
+            <h4>Flexible</h4>
+            <p>Workouts that fit your schedule</p>
+          </div>
         </div>
       </div>
     </div>
@@ -200,21 +198,6 @@
             <label for="aiAdditionalInfo">Additional Information (Optional)</label>
             <textarea id="aiAdditionalInfo" rows="3" placeholder="Any other details about your fitness journey, experience level, or specific goals you'd like us to consider"></textarea>
           </div>
-
-          <div class="form-group full-width">
-            <label>Focus Areas</label>
-            <div class="focus-grid">
-              <label class="checkbox-label"><input type="checkbox" value="glutes"> <span>Glutes</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="arms"> <span>Arms</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="abs"> <span>Abs</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="chest"> <span>Chest</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="back"> <span>Back</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="legs"> <span>Legs</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="shoulders"> <span>Shoulders</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="cardio"> <span>Cardio</span></label>
-              <label class="checkbox-label"><input type="checkbox" value="flexibility"> <span>Flexibility</span></label>
-            </div>
-          </div>
         </div>
 
 
@@ -261,11 +244,6 @@
           <h4>Level</h4>
           <p id="aiLevelText"></p>
         </div>
-        <div class="summary-card">
-          <i class="fas fa-bolt"></i>
-          <h4>Focus Areas</h4>
-          <p id="aiFocusText"></p>
-        </div>
       </div>
       
       <div id="aiWorkoutPlan" class="ai-workout-plan">
@@ -292,6 +270,44 @@
         <button class="btn-tertiary" id="emailWeeklyPlanBtn">
           <i class="fas fa-envelope"></i>
           Email Plan
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="results" class="results hidden">
+    <div class="container">
+      <h3>Your Personalized Workout Plan</h3>
+      <div class="plan-summary">
+        <div class="summary-card">
+          <i class="fas fa-calendar"></i>
+          <h4>Schedule</h4>
+          <p id="scheduleText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-bullseye"></i>
+          <h4>Goal</h4>
+          <p id="goalText"></p>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-dumbbell"></i>
+          <h4>Equipment</h4>
+          <p id="equipmentText"></p>
+        </div>
+      </div>
+      
+      <div id="workoutPlan" class="workout-plan">
+        <!-- Workout plan will be generated here -->
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-secondary" onclick="downloadPlan()">
+          <i class="fas fa-download"></i>
+          Download PDF
+        </button>
+        <button class="btn-primary" onclick="regeneratePlan()">
+          <i class="fas fa-redo"></i>
+          Regenerate Plan
         </button>
       </div>
     </div>

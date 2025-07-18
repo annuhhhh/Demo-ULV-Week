@@ -150,290 +150,6 @@ const workoutTemplates = {
 };
 
 // DOM elements
-const workoutForm = document.getElementById('workoutForm');
-const resultsSection = document.getElementById('results');
-const workoutPlanContainer = document.getElementById('workoutPlan');
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-  workoutForm.addEventListener('submit', handleFormSubmit);
-});
-
-// Utility functions
-function scrollToForm() {
-  document.querySelector('.workout-generator').scrollIntoView({ 
-    behavior: 'smooth' 
-  });
-}
-
-function scrollToAiGenerator() {
-  document.querySelector('#ai-workout-generator').scrollIntoView({ 
-    behavior: 'smooth' 
-  });
-}
-
-function getSelectedEquipment() {
-  const checkboxes = document.querySelectorAll('input[type="checkbox"][value]');
-  const selected = [];
-  checkboxes.forEach(checkbox => {
-    if (checkbox.checked) {
-      selected.push(checkbox.value);
-    }
-  });
-  return selected;
-}
-
-function getSelectedFocusAreas() {
-  const focusCheckboxes = document.querySelectorAll('input[type="checkbox"][value*="-body"], input[type="checkbox"][value="core"], input[type="checkbox"][value="cardio"], input[type="checkbox"][value="flexibility"]');
-  const selected = [];
-  focusCheckboxes.forEach(checkbox => {
-    if (checkbox.checked) {
-      selected.push(checkbox.value);
-    }
-  });
-  return selected;
-}
-
-function generateWorkoutPlan(formData) {
-  const {
-    fitnessLevel,
-    primaryGoal,
-    workoutDays,
-    workoutDuration,
-    equipment,
-    focusAreas
-  } = formData;
-
-  const template = workoutTemplates[primaryGoal];
-  const plan = {
-    days: parseInt(workoutDays),
-    duration: parseInt(workoutDuration),
-    exercises: []
-  };
-
-  // Generate exercises for each day
-  for (let day = 1; day <= plan.days; day++) {
-    const dayExercises = generateDayWorkout(
-      fitnessLevel,
-      equipment,
-      focusAreas,
-      template,
-      day,
-      plan.days
-    );
-    plan.exercises.push({
-      day: day,
-      exercises: dayExercises
-    });
-  }
-
-  return plan;
-}
-
-function generateDayWorkout(level, equipment, focusAreas, template, day, totalDays) {
-  const exercises = [];
-  const availableExercises = [];
-
-  // Collect available exercises based on equipment
-  equipment.forEach(eq => {
-    if (exerciseDatabase[eq] && exerciseDatabase[eq][level]) {
-      availableExercises.push(...exerciseDatabase[eq][level]);
-    }
-  });
-
-  // If no equipment selected, use bodyweight
-  if (availableExercises.length === 0) {
-    availableExercises.push(...exerciseDatabase.bodyweight[level]);
-  }
-
-  // Filter exercises based on focus areas if specified
-  let filteredExercises = availableExercises;
-  if (focusAreas.length > 0) {
-    filteredExercises = availableExercises.filter(ex => 
-      focusAreas.includes(ex.category)
-    );
-  }
-
-  // If no exercises match focus areas, use all available
-  if (filteredExercises.length === 0) {
-    filteredExercises = availableExercises;
-  }
-
-  // Select exercises based on workout type and day
-  const exercisesPerDay = Math.min(6, Math.floor(parseInt(workoutDuration) / 8));
-  
-  // Shuffle and select exercises
-  const shuffled = filteredExercises.sort(() => 0.5 - Math.random());
-  const selectedExercises = shuffled.slice(0, exercisesPerDay);
-
-  // Add warm-up and cool-down
-  exercises.push({
-    name: "Warm-up (5-10 minutes)",
-    sets: 1,
-    reps: "Dynamic stretching and light cardio",
-    rest: "N/A",
-    category: "warmup"
-  });
-
-  exercises.push(...selectedExercises);
-
-  exercises.push({
-    name: "Cool-down (5-10 minutes)",
-    sets: 1,
-    reps: "Static stretching and breathing",
-    rest: "N/A",
-    category: "cooldown"
-  });
-
-  return exercises;
-}
-
-function handleFormSubmit(e) {
-  e.preventDefault();
-
-  const formData = {
-    fitnessLevel: document.getElementById('fitnessLevel').value,
-    primaryGoal: document.getElementById('primaryGoal').value,
-    workoutDays: document.getElementById('workoutDays').value,
-    workoutDuration: document.getElementById('workoutDuration').value,
-    equipment: getSelectedEquipment(),
-    focusAreas: getSelectedFocusAreas()
-  };
-
-  // Validate form
-  if (!formData.fitnessLevel || !formData.primaryGoal || !formData.workoutDays || !formData.workoutDuration) {
-    alert('Please fill in all required fields.');
-    return;
-  }
-
-  if (formData.equipment.length === 0) {
-    alert('Please select at least one piece of equipment.');
-    return;
-  }
-
-  // Generate workout plan
-  const workoutPlan = generateWorkoutPlan(formData);
-
-  // Display results
-  displayWorkoutPlan(formData, workoutPlan);
-}
-
-function displayWorkoutPlan(formData, workoutPlan) {
-  // Update summary cards
-  document.getElementById('scheduleText').textContent = `${workoutPlan.days} days per week, ${workoutPlan.duration} minutes per session`;
-  
-  const goalLabels = {
-    weightLoss: "Weight Loss",
-    muscleGain: "Muscle Gain", 
-    strength: "Strength Building",
-    endurance: "Endurance",
-    general: "General Fitness"
-  };
-  document.getElementById('goalText').textContent = goalLabels[formData.primaryGoal];
-  
-  const equipmentLabels = {
-    bodyweight: "Bodyweight",
-    dumbbells: "Dumbbells",
-    barbell: "Barbell",
-    "resistance-bands": "Resistance Bands",
-    "pull-up-bar": "Pull-up Bar",
-    "gym-access": "Full Gym"
-  };
-  const equipmentText = formData.equipment.map(eq => equipmentLabels[eq] || eq).join(", ");
-  document.getElementById('equipmentText').textContent = equipmentText;
-
-  // Generate workout plan HTML
-  let planHTML = '';
-  
-  workoutPlan.exercises.forEach(dayPlan => {
-    planHTML += `
-      <div class="workout-day">
-        <h4>
-          <i class="fas fa-calendar-day"></i>
-          Day ${dayPlan.day}
-        </h4>
-        <ul class="exercise-list">
-    `;
-    
-    dayPlan.exercises.forEach(exercise => {
-      const isSpecial = exercise.category === 'warmup' || exercise.category === 'cooldown';
-      planHTML += `
-        <li class="exercise-item ${isSpecial ? 'special' : ''}">
-          <span class="exercise-name">${exercise.name}</span>
-          <span class="exercise-details">
-            ${exercise.sets} set${exercise.sets > 1 ? 's' : ''} × ${exercise.reps}
-            ${exercise.rest !== 'N/A' ? ` | Rest: ${exercise.rest}` : ''}
-          </span>
-        </li>
-      `;
-    });
-    
-    planHTML += `
-        </ul>
-      </div>
-    `;
-  });
-
-  workoutPlanContainer.innerHTML = planHTML;
-
-  // Show results section
-  resultsSection.classList.remove('hidden');
-  resultsSection.scrollIntoView({ behavior: 'smooth' });
-}
-
-function regeneratePlan() {
-  // Scroll back to form
-  document.querySelector('.workout-generator').scrollIntoView({ 
-    behavior: 'smooth' 
-  });
-  
-  // Hide results
-  resultsSection.classList.add('hidden');
-}
-
-function downloadPlan() {
-  // Create a simple text version of the plan
-  const planText = generatePlanText();
-  
-  // Create blob and download
-  const blob = new Blob([planText], { type: 'text/plain' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'workout-plan.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(url);
-}
-
-function generatePlanText() {
-  const planContainer = document.getElementById('workoutPlan');
-  let text = 'FITPLAN PRO - PERSONALIZED WORKOUT PLAN\n';
-  text += '==========================================\n\n';
-  
-  const workoutDays = planContainer.querySelectorAll('.workout-day');
-  
-  workoutDays.forEach(day => {
-    const dayTitle = day.querySelector('h4').textContent.trim();
-    text += `${dayTitle}\n`;
-    text += '-'.repeat(dayTitle.length) + '\n';
-    
-    const exercises = day.querySelectorAll('.exercise-item');
-    exercises.forEach(exercise => {
-      const name = exercise.querySelector('.exercise-name').textContent;
-      const details = exercise.querySelector('.exercise-details').textContent;
-      text += `• ${name}: ${details}\n`;
-    });
-    text += '\n';
-  });
-  
-  return text;
-}
-
-// AI Workout Generator JavaScript
-
-// DOM elements for AI section
 const aiWorkoutForm = document.getElementById('aiWorkoutForm');
 const aiResultsSection = document.getElementById('aiResults');
 const aiWorkoutPlanContainer = document.getElementById('aiWorkoutPlan');
@@ -454,17 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // AI Form handling functions
 function getSelectedAiEquipment() {
   const checkboxes = document.querySelectorAll('#aiWorkoutForm input[type="checkbox"][value]');
-  const selected = [];
-  checkboxes.forEach(checkbox => {
-    if (checkbox.checked) {
-      selected.push(checkbox.value);
-    }
-  });
-  return selected;
-}
-
-function getSelectedAiFocusAreas() {
-  const checkboxes = document.querySelectorAll('#aiWorkoutForm .focus-grid input[type="checkbox"]');
   const selected = [];
   checkboxes.forEach(checkbox => {
     if (checkbox.checked) {
@@ -617,33 +322,36 @@ Please provide a comprehensive, well-structured workout plan that the user can f
   return prompt;
 }
 
-async function callOpenAI(apiKey, prompt, formDataOverride) {
-  const formData = formDataOverride || {
-        aiFitnessGoal: document.getElementById('aiFitnessGoal').value,
-        aiWorkoutDays: document.getElementById('aiWorkoutDays').value,
-        aiFitnessLevel: document.getElementById('aiFitnessLevel').value,
-        aiWorkoutDuration: document.getElementById('aiWorkoutDuration').value,
-        aiEquipment: getSelectedAiEquipment(),
-    aiFocusAreas: getSelectedAiFocusAreas(),
-        aiInjuries: document.getElementById('aiLimitations').value,
-        aiPreferences: document.getElementById('aiAdditionalInfo').value
-  };
+async function callOpenAI(apiKey, prompt) {
   const response = await fetch('/api/generate-workout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ formData })
+    body: JSON.stringify({
+      formData: {
+        aiFitnessGoal: document.getElementById('aiFitnessGoal').value,
+        aiWorkoutDays: document.getElementById('aiWorkoutDays').value,
+        aiFitnessLevel: document.getElementById('aiFitnessLevel').value,
+        aiWorkoutDuration: document.getElementById('aiWorkoutDuration').value,
+        aiEquipment: getSelectedAiEquipment(),
+        aiInjuries: document.getElementById('aiLimitations').value,
+        aiPreferences: document.getElementById('aiAdditionalInfo').value
+      }
+    })
   });
+
   let data;
   try {
     data = await response.json();
   } catch (err) {
     throw new Error('Invalid server response. Please try again later.');
   }
+
   if (!response.ok) {
     throw new Error(data?.error || `HTTP error! status: ${response.status}`);
   }
+
   return data.workoutPlan;
 }
 
@@ -656,7 +364,6 @@ async function handleAiFormSubmit(e) {
     fitnessLevel: document.getElementById('aiFitnessLevel').value,
     workoutDuration: document.getElementById('aiWorkoutDuration').value,
     equipment: getSelectedAiEquipment(),
-    focusAreas: getSelectedAiFocusAreas(),
     limitations: document.getElementById('aiLimitations').value.trim(),
     additionalInfo: document.getElementById('aiAdditionalInfo').value.trim()
   };
@@ -677,11 +384,14 @@ async function handleAiFormSubmit(e) {
 
   try {
     // Call backend API
-    const aiResponse = await callOpenAI(null, null, formData);
+    const aiResponse = await callOpenAI(null, null);
+    
     // Display results
     displayAiWorkoutPlan(formData, aiResponse);
+    
     // Show success message
     showMessage('Workout plan generated successfully!', 'success');
+    
   } catch (error) {
     console.error('Error generating workout plan:', error);
     showMessage(`Error: ${error.message}`, 'error');
@@ -691,7 +401,7 @@ async function handleAiFormSubmit(e) {
 }
 
 function displayAiWorkoutPlan(formData, aiResponse) {
-  // Unified summary cards
+  // Update summary cards
   const goalLabels = {
     'weight-loss': 'Weight Loss & Fat Burning',
     'muscle-building': 'Muscle Building & Hypertrophy',
@@ -701,6 +411,7 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'sports-performance': 'Sports Performance',
     'general-wellness': 'General Wellness & Maintenance'
   };
+
   const levelLabels = {
     'complete-beginner': 'Complete Beginner',
     'beginner': 'Beginner',
@@ -708,6 +419,7 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'advanced': 'Advanced',
     'elite': 'Elite'
   };
+
   const equipmentLabels = {
     'bodyweight-only': 'Bodyweight Only',
     'dumbbells': 'Dumbbells',
@@ -718,13 +430,15 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'cardio-equipment': 'Cardio Equipment',
     'full-gym': 'Full Gym Access'
   };
+
   document.getElementById('aiGoalText').textContent = goalLabels[formData.fitnessGoal];
   document.getElementById('aiScheduleText').textContent = `${formData.workoutDays} days per week, ${formData.workoutDuration} minutes per session`;
-  document.getElementById('aiEquipmentText').textContent = formData.equipment.map(eq => equipmentLabels[eq] || eq).join(', ');
+  document.getElementById('aiEquipmentText').textContent = formData.equipment.map(eq => equipmentLabels[eq]).join(', ');
   document.getElementById('aiLevelText').textContent = levelLabels[formData.fitnessLevel];
-  document.getElementById('aiFocusText').textContent = (formData.focusAreas && formData.focusAreas.length > 0) ? formData.focusAreas.map(f => f.charAt(0).toUpperCase() + f.slice(1)).join(', ') : 'General';
 
-  // Parse AI response and display in classic format
+  // --- New: Parse and format the AI response as a table sorted by day ---
+  // This assumes the AI response contains day headings like "Day 1", "Day 2", etc.
+  // We'll extract each day's section and build a table for each.
   let planHTML = '';
   const dayRegex = /Day\s*(\d+)[^\n\r]*[\n\r]+([\s\S]*?)(?=Day\s*\d+|$)/gi;
   let match;
@@ -736,26 +450,33 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     });
   }
   days.sort((a, b) => a.day - b.day);
+
   days.forEach(dayObj => {
+    // Try to extract exercises as lines or list items
     let exercises = [];
+    // Try to find bullet points or numbered lists
     const bulletRegex = /(?:\u2022|\*|\-|\d+\.)\s*(.+)/g;
     let bulletMatch;
     while ((bulletMatch = bulletRegex.exec(dayObj.content)) !== null) {
       exercises.push(bulletMatch[1]);
     }
+    // If no bullets, split by lines
     if (exercises.length === 0) {
       exercises = dayObj.content.split(/\n|\r/).map(l => l.trim()).filter(l => l);
     }
-    planHTML += `<div class="workout-day"><h4><i class="fas fa-calendar-day"></i> Day ${dayObj.day}</h4><ul class="exercise-list">`;
+    planHTML += `<h4>Day ${dayObj.day}</h4><table class="ai-plan-table"><thead><tr><th>Exercise</th></tr></thead><tbody>`;
     exercises.forEach(ex => {
-      planHTML += `<li class="exercise-item"><span class="exercise-name">${ex}</span></li>`;
+      planHTML += `<tr><td>${ex}</td></tr>`;
     });
-    planHTML += `</ul></div>`;
+    planHTML += `</tbody></table>`;
   });
   if (planHTML === '') {
+    // fallback: show original response
     planHTML = aiResponse;
   }
   aiWorkoutPlanContainer.innerHTML = planHTML;
+
+  // Show results section
   aiResultsSection.classList.remove('hidden');
   aiResultsSection.scrollIntoView({ behavior: 'smooth' });
 }
@@ -788,12 +509,6 @@ function regenerateAiPlan() {
     checkbox.checked = lastAiFormData.equipment.includes(checkbox.value);
   });
 
-  // Re-check focus area checkboxes
-  const focusCheckboxes = document.querySelectorAll('#aiWorkoutForm .focus-grid input[type="checkbox"]');
-  focusCheckboxes.forEach(checkbox => {
-    checkbox.checked = lastAiFormData.focusAreas.includes(checkbox.value);
-  });
-
   showMessage('Form filled with previous data. Click "Generate AI Workout Plan" to create a new plan.', 'info');
 }
 
@@ -807,7 +522,6 @@ Goal: ${document.getElementById('aiGoalText').textContent}
 Schedule: ${document.getElementById('aiScheduleText').textContent}
 Equipment: ${document.getElementById('aiEquipmentText').textContent}
 Level: ${document.getElementById('aiLevelText').textContent}
-Focus Areas: ${document.getElementById('aiFocusText').textContent}
 
 ${planContent.replace(/<[^>]*>/g, '\n')}
   `;
@@ -831,7 +545,6 @@ ${document.getElementById('aiGoalText').textContent}
 ${document.getElementById('aiScheduleText').textContent}
 ${document.getElementById('aiEquipmentText').textContent}
 ${document.getElementById('aiLevelText').textContent}
-${document.getElementById('aiFocusText').textContent}
 
 Generated by FitPlan Pro AI
   `;
@@ -901,3 +614,10 @@ document.addEventListener('DOMContentLoaded', function() {
     emailWeeklyPlanBtn.addEventListener('click', emailAiPlan);
   }
 }); 
+
+function scrollToAiGenerator() {
+  const section = document.getElementById('ai-workout-generator');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+} 
