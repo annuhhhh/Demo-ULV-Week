@@ -89,123 +89,6 @@
     </div>
   </section>
 
-  <section class="workout-generator">
-    <div class="container">
-      <h3>Create Your Personalized Workout Plan</h3>
-      <p>Fill out the form below to get a custom workout plan tailored to your needs</p>
-      
-      <form id="workoutForm" class="workout-form">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="fitnessLevel">Fitness Level</label>
-            <select id="fitnessLevel" required>
-              <option value="">Select your level</option>
-              <option value="beginner">Beginner (0-6 months)</option>
-              <option value="intermediate">Intermediate (6 months - 2 years)</option>
-              <option value="advanced">Advanced (2+ years)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="primaryGoal">Primary Goal</label>
-            <select id="primaryGoal" required>
-              <option value="">Select your goal</option>
-              <option value="weightLoss">Weight Loss</option>
-              <option value="muscleGain">Muscle Gain</option>
-              <option value="strength">Strength Building</option>
-              <option value="endurance">Endurance</option>
-              <option value="general">General Fitness</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="workoutDays">Days per Week</label>
-            <select id="workoutDays" required>
-              <option value="">Select frequency</option>
-              <option value="2">2 days</option>
-              <option value="3">3 days</option>
-              <option value="4">4 days</option>
-              <option value="5">5 days</option>
-              <option value="6">6 days</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="workoutDuration">Workout Duration</label>
-            <select id="workoutDuration" required>
-              <option value="">Select duration</option>
-              <option value="30">30 minutes</option>
-              <option value="45">45 minutes</option>
-              <option value="60">60 minutes</option>
-              <option value="90">90 minutes</option>
-            </select>
-          </div>
-
-          <div class="form-group full-width">
-            <label>Available Equipment</label>
-            <div class="equipment-grid">
-              <label class="checkbox-label">
-                <input type="checkbox" value="bodyweight">
-                <span>Bodyweight Only</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="dumbbells">
-                <span>Dumbbells</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="barbell">
-                <span>Barbell</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="resistance-bands">
-                <span>Resistance Bands</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="pull-up-bar">
-                <span>Pull-up Bar</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="gym-access">
-                <span>Full Gym Access</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group full-width">
-            <label for="focusAreas">Focus Areas (Optional)</label>
-            <div class="focus-grid">
-              <label class="checkbox-label">
-                <input type="checkbox" value="upper-body">
-                <span>Upper Body</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="lower-body">
-                <span>Lower Body</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="core">
-                <span>Core</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="cardio">
-                <span>Cardio</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" value="flexibility">
-                <span>Flexibility</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="generate-btn">
-          <i class="fas fa-magic"></i>
-          Generate My Workout Plan
-        </button>
-      </form>
-    </div>
-  </section>
-
   <section id="ai-workout-generator" class="ai-workout-generator">
     <div class="container">
       <div class="ai-header">
@@ -317,6 +200,21 @@
             <label for="aiAdditionalInfo">Additional Information (Optional)</label>
             <textarea id="aiAdditionalInfo" rows="3" placeholder="Any other details about your fitness journey, experience level, or specific goals you'd like us to consider"></textarea>
           </div>
+
+          <div class="form-group full-width">
+            <label>Focus Areas</label>
+            <div class="focus-grid">
+              <label class="checkbox-label"><input type="checkbox" value="glutes"> <span>Glutes</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="arms"> <span>Arms</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="abs"> <span>Abs</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="chest"> <span>Chest</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="back"> <span>Back</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="legs"> <span>Legs</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="shoulders"> <span>Shoulders</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="cardio"> <span>Cardio</span></label>
+              <label class="checkbox-label"><input type="checkbox" value="flexibility"> <span>Flexibility</span></label>
+            </div>
+          </div>
         </div>
 
 
@@ -363,6 +261,11 @@
           <h4>Level</h4>
           <p id="aiLevelText"></p>
         </div>
+        <div class="summary-card">
+          <i class="fas fa-bolt"></i>
+          <h4>Focus Areas</h4>
+          <p id="aiFocusText"></p>
+        </div>
       </div>
       
       <div id="aiWorkoutPlan" class="ai-workout-plan">
@@ -389,44 +292,6 @@
         <button class="btn-tertiary" id="emailWeeklyPlanBtn">
           <i class="fas fa-envelope"></i>
           Email Plan
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <section id="results" class="results hidden">
-    <div class="container">
-      <h3>Your Personalized Workout Plan</h3>
-      <div class="plan-summary">
-        <div class="summary-card">
-          <i class="fas fa-calendar"></i>
-          <h4>Schedule</h4>
-          <p id="scheduleText"></p>
-        </div>
-        <div class="summary-card">
-          <i class="fas fa-bullseye"></i>
-          <h4>Goal</h4>
-          <p id="goalText"></p>
-        </div>
-        <div class="summary-card">
-          <i class="fas fa-dumbbell"></i>
-          <h4>Equipment</h4>
-          <p id="equipmentText"></p>
-        </div>
-      </div>
-      
-      <div id="workoutPlan" class="workout-plan">
-        <!-- Workout plan will be generated here -->
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn-secondary" onclick="downloadPlan()">
-          <i class="fas fa-download"></i>
-          Download PDF
-        </button>
-        <button class="btn-primary" onclick="regeneratePlan()">
-          <i class="fas fa-redo"></i>
-          Regenerate Plan
         </button>
       </div>
     </div>

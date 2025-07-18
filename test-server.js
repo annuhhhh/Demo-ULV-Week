@@ -4,7 +4,7 @@ const http = require('http');
 function testServer() {
   const options = {
     hostname: 'localhost',
-    port: 3000,
+    port: 5501,
     path: '/api/health',
     method: 'GET'
   };
@@ -45,7 +45,7 @@ function testServer() {
 function testMainPage() {
   const options = {
     hostname: 'localhost',
-    port: 3000,
+    port: 5501,
     path: '/',
     method: 'GET'
   };

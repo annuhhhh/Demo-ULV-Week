@@ -463,6 +463,17 @@ function getSelectedAiEquipment() {
   return selected;
 }
 
+function getSelectedAiFocusAreas() {
+  const checkboxes = document.querySelectorAll('#aiWorkoutForm .focus-grid input[type="checkbox"]');
+  const selected = [];
+  checkboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      selected.push(checkbox.value);
+    }
+  });
+  return selected;
+}
+
 function validateAiForm(formData) {
   const errors = [];
   
@@ -606,36 +617,33 @@ Please provide a comprehensive, well-structured workout plan that the user can f
   return prompt;
 }
 
-async function callOpenAI(apiKey, prompt) {
-  const response = await fetch('/api/generate-workout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      formData: {
+async function callOpenAI(apiKey, prompt, formDataOverride) {
+  const formData = formDataOverride || {
         aiFitnessGoal: document.getElementById('aiFitnessGoal').value,
         aiWorkoutDays: document.getElementById('aiWorkoutDays').value,
         aiFitnessLevel: document.getElementById('aiFitnessLevel').value,
         aiWorkoutDuration: document.getElementById('aiWorkoutDuration').value,
         aiEquipment: getSelectedAiEquipment(),
+    aiFocusAreas: getSelectedAiFocusAreas(),
         aiInjuries: document.getElementById('aiLimitations').value,
         aiPreferences: document.getElementById('aiAdditionalInfo').value
-      }
-    })
+  };
+  const response = await fetch('/api/generate-workout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ formData })
   });
-
   let data;
   try {
     data = await response.json();
   } catch (err) {
     throw new Error('Invalid server response. Please try again later.');
   }
-
   if (!response.ok) {
     throw new Error(data?.error || `HTTP error! status: ${response.status}`);
   }
-
   return data.workoutPlan;
 }
 
@@ -648,6 +656,7 @@ async function handleAiFormSubmit(e) {
     fitnessLevel: document.getElementById('aiFitnessLevel').value,
     workoutDuration: document.getElementById('aiWorkoutDuration').value,
     equipment: getSelectedAiEquipment(),
+    focusAreas: getSelectedAiFocusAreas(),
     limitations: document.getElementById('aiLimitations').value.trim(),
     additionalInfo: document.getElementById('aiAdditionalInfo').value.trim()
   };
@@ -668,14 +677,11 @@ async function handleAiFormSubmit(e) {
 
   try {
     // Call backend API
-    const aiResponse = await callOpenAI(null, null);
-    
+    const aiResponse = await callOpenAI(null, null, formData);
     // Display results
     displayAiWorkoutPlan(formData, aiResponse);
-    
     // Show success message
     showMessage('Workout plan generated successfully!', 'success');
-    
   } catch (error) {
     console.error('Error generating workout plan:', error);
     showMessage(`Error: ${error.message}`, 'error');
@@ -685,7 +691,7 @@ async function handleAiFormSubmit(e) {
 }
 
 function displayAiWorkoutPlan(formData, aiResponse) {
-  // Update summary cards
+  // Unified summary cards
   const goalLabels = {
     'weight-loss': 'Weight Loss & Fat Burning',
     'muscle-building': 'Muscle Building & Hypertrophy',
@@ -695,7 +701,6 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'sports-performance': 'Sports Performance',
     'general-wellness': 'General Wellness & Maintenance'
   };
-
   const levelLabels = {
     'complete-beginner': 'Complete Beginner',
     'beginner': 'Beginner',
@@ -703,7 +708,6 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'advanced': 'Advanced',
     'elite': 'Elite'
   };
-
   const equipmentLabels = {
     'bodyweight-only': 'Bodyweight Only',
     'dumbbells': 'Dumbbells',
@@ -714,16 +718,44 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'cardio-equipment': 'Cardio Equipment',
     'full-gym': 'Full Gym Access'
   };
-
   document.getElementById('aiGoalText').textContent = goalLabels[formData.fitnessGoal];
   document.getElementById('aiScheduleText').textContent = `${formData.workoutDays} days per week, ${formData.workoutDuration} minutes per session`;
-  document.getElementById('aiEquipmentText').textContent = formData.equipment.map(eq => equipmentLabels[eq]).join(', ');
+  document.getElementById('aiEquipmentText').textContent = formData.equipment.map(eq => equipmentLabels[eq] || eq).join(', ');
   document.getElementById('aiLevelText').textContent = levelLabels[formData.fitnessLevel];
+  document.getElementById('aiFocusText').textContent = (formData.focusAreas && formData.focusAreas.length > 0) ? formData.focusAreas.map(f => f.charAt(0).toUpperCase() + f.slice(1)).join(', ') : 'General';
 
-  // Display the AI-generated workout plan
-  aiWorkoutPlanContainer.innerHTML = aiResponse;
-
-  // Show results section
+  // Parse AI response and display in classic format
+  let planHTML = '';
+  const dayRegex = /Day\s*(\d+)[^\n\r]*[\n\r]+([\s\S]*?)(?=Day\s*\d+|$)/gi;
+  let match;
+  let days = [];
+  while ((match = dayRegex.exec(aiResponse)) !== null) {
+    days.push({
+      day: parseInt(match[1]),
+      content: match[2].trim()
+    });
+  }
+  days.sort((a, b) => a.day - b.day);
+  days.forEach(dayObj => {
+    let exercises = [];
+    const bulletRegex = /(?:\u2022|\*|\-|\d+\.)\s*(.+)/g;
+    let bulletMatch;
+    while ((bulletMatch = bulletRegex.exec(dayObj.content)) !== null) {
+      exercises.push(bulletMatch[1]);
+    }
+    if (exercises.length === 0) {
+      exercises = dayObj.content.split(/\n|\r/).map(l => l.trim()).filter(l => l);
+    }
+    planHTML += `<div class="workout-day"><h4><i class="fas fa-calendar-day"></i> Day ${dayObj.day}</h4><ul class="exercise-list">`;
+    exercises.forEach(ex => {
+      planHTML += `<li class="exercise-item"><span class="exercise-name">${ex}</span></li>`;
+    });
+    planHTML += `</ul></div>`;
+  });
+  if (planHTML === '') {
+    planHTML = aiResponse;
+  }
+  aiWorkoutPlanContainer.innerHTML = planHTML;
   aiResultsSection.classList.remove('hidden');
   aiResultsSection.scrollIntoView({ behavior: 'smooth' });
 }
@@ -756,6 +788,12 @@ function regenerateAiPlan() {
     checkbox.checked = lastAiFormData.equipment.includes(checkbox.value);
   });
 
+  // Re-check focus area checkboxes
+  const focusCheckboxes = document.querySelectorAll('#aiWorkoutForm .focus-grid input[type="checkbox"]');
+  focusCheckboxes.forEach(checkbox => {
+    checkbox.checked = lastAiFormData.focusAreas.includes(checkbox.value);
+  });
+
   showMessage('Form filled with previous data. Click "Generate AI Workout Plan" to create a new plan.', 'info');
 }
 
@@ -769,6 +807,7 @@ Goal: ${document.getElementById('aiGoalText').textContent}
 Schedule: ${document.getElementById('aiScheduleText').textContent}
 Equipment: ${document.getElementById('aiEquipmentText').textContent}
 Level: ${document.getElementById('aiLevelText').textContent}
+Focus Areas: ${document.getElementById('aiFocusText').textContent}
 
 ${planContent.replace(/<[^>]*>/g, '\n')}
   `;
@@ -792,6 +831,7 @@ ${document.getElementById('aiGoalText').textContent}
 ${document.getElementById('aiScheduleText').textContent}
 ${document.getElementById('aiEquipmentText').textContent}
 ${document.getElementById('aiLevelText').textContent}
+${document.getElementById('aiFocusText').textContent}
 
 Generated by FitPlan Pro AI
   `;
