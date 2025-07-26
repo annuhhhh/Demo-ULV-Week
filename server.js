@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5502;
+const PORT = process.env.PORT || 5503;
 
 // Middleware
 app.use(cors({
@@ -129,10 +129,13 @@ function createWorkoutPrompt(formData) {
     aiWorkoutDays,
     aiFitnessLevel,
     aiWorkoutDuration,
+    aiTargetMuscle,
     aiEquipment,
     aiInjuries,
     aiPreferences
   } = formData;
+
+  const muscleGroups = Array.isArray(aiTargetMuscle) ? aiTargetMuscle.join(', ') : aiTargetMuscle;
 
   return `Create a detailed, personalized workout plan with the following specifications:
 
@@ -140,19 +143,22 @@ Fitness Goal: ${aiFitnessGoal}
 Workout Frequency: ${aiWorkoutDays} days per week
 Fitness Level: ${aiFitnessLevel}
 Workout Duration: ${aiWorkoutDuration} minutes per session
+Target Muscle Group(s): ${muscleGroups}
 Available Equipment: ${aiEquipment.join(', ')}
 Injuries/Considerations: ${aiInjuries || 'None'}
 Additional Preferences: ${aiPreferences || 'None'}
 
+IMPORTANT: You MUST create exactly ${aiWorkoutDays} workout days. Do not create fewer or more days than requested.
+
 Please provide:
-1. A structured workout plan for ${aiWorkoutDays} days
-2. Specific exercises with sets, reps, and rest periods
+1. A structured workout plan with EXACTLY ${aiWorkoutDays} days (Day 1, Day 2, Day 3, etc.)
+2. Specific exercises with sets, reps, and rest periods for each day
 3. Warm-up and cool-down recommendations
 4. Progression tips
 5. Safety considerations
 6. Expected results timeline
 
-Format the response in a clear, easy-to-follow structure with day-by-day breakdowns.`;
+Format the response with clear day headings like "Day 1:", "Day 2:", etc. Each day should be a complete workout session.`;
 }
 
 // Helper function to create weekly workout prompt
@@ -200,7 +206,7 @@ app.get('/api/health', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 FitPlan Pro server running on port ${5502}`);
+  console.log(`🚀 FitPlan Pro server running on port ${5503}`);
   console.log(`📱 OpenAI API configured: ${!!process.env.OPENAI_API_KEY}`);
-  console.log(`🌐 Visit: http://localhost:${5502}}`);
+  console.log(`🌐 Visit: http://localhost:${5503}}`);
 }); 

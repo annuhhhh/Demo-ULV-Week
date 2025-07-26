@@ -19,7 +19,6 @@
         <a href="#home">Home</a>
         <a href="#features">Features</a>
         <a href="#ai-workout-generator">AI Generator</a>
-        <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -152,6 +151,56 @@
           </div>
 
           <div class="form-group full-width">
+            <label>Target Muscle Group(s)</label>
+            <div class="muscle-group-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" value="full-body">
+                <span>Full Body</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="upper-body">
+                <span>Upper Body</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="lower-body">
+                <span>Lower Body</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="core">
+                <span>Core</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="arms">
+                <span>Arms</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="legs">
+                <span>Legs</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="back">
+                <span>Back</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="chest">
+                <span>Chest</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="shoulders">
+                <span>Shoulders</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="glutes">
+                <span>Glutes</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="cardio">
+                <span>Cardio/Conditioning</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
             <label>Available Equipment</label>
             <div class="equipment-grid">
               <label class="checkbox-label">
@@ -244,10 +293,23 @@
           <h4>Level</h4>
           <p id="aiLevelText"></p>
         </div>
+        <div class="summary-card">
+          <i class="fas fa-bolt"></i>
+          <h4>Muscle Group</h4>
+          <p id="aiMuscleText"></p>
+        </div>
       </div>
       
-      <div id="aiWorkoutPlan" class="ai-workout-plan">
-        <!-- AI-generated workout plan will be displayed here -->
+      <div class="ai-results-flex">
+        <div class="ai-results-left">
+          <div id="aiWorkoutPlan" class="ai-workout-plan">
+            <!-- AI-generated workout plan will be displayed here -->
+          </div>
+        </div>
+        <div class="ai-results-right">
+          <canvas id="muscleRadarChart" width="400" height="400" style="max-width:100%;"></canvas>
+          <div id="aiExtraSections"></div>
+        </div>
       </div>
 
       <div class="ai-action-buttons">
@@ -313,26 +375,7 @@
     </div>
   </section>
 
-  <section id="about" class="about">
-    <div class="container">
-      <h3>About FitPlan Pro</h3>
-      <p>We believe everyone deserves access to personalized fitness guidance. Our AI-powered platform creates custom workout plans that adapt to your progress, ensuring you stay motivated and achieve your goals.</p>
-      <div class="stats">
-        <div class="stat">
-          <h4>10,000+</h4>
-          <p>Active Users</p>
-        </div>
-        <div class="stat">
-          <h4>95%</h4>
-          <p>Success Rate</p>
-        </div>
-        <div class="stat">
-          <h4>50+</h4>
-          <p>Expert Trainers</p>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <footer id="contact">
     <div class="container">

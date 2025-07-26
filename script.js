@@ -179,6 +179,17 @@ function getSelectedAiEquipment() {
   return selected;
 }
 
+function getSelectedMuscleGroups() {
+  const checkboxes = document.querySelectorAll('.muscle-group-grid input[type="checkbox"][value]');
+  const selected = [];
+  checkboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      selected.push(checkbox.value);
+    }
+  });
+  return selected;
+}
+
 function validateAiForm(formData) {
   const errors = [];
   
@@ -196,6 +207,10 @@ function validateAiForm(formData) {
   
   if (!formData.workoutDuration) {
     errors.push('Please select your preferred workout duration');
+  }
+  
+  if (!formData.targetMuscle || formData.targetMuscle.length === 0) {
+    errors.push('Please select at least one target muscle group');
   }
   
   if (formData.equipment.length === 0) {
@@ -279,6 +294,20 @@ function createOpenAIPrompt(formData) {
     'full-gym': 'Full Gym Access'
   };
 
+  const muscleLabels = {
+    'full-body': 'Full Body',
+    'upper-body': 'Upper Body',
+    'lower-body': 'Lower Body',
+    'core': 'Core',
+    'arms': 'Arms',
+    'legs': 'Legs',
+    'back': 'Back',
+    'chest': 'Chest',
+    'shoulders': 'Shoulders',
+    'glutes': 'Glutes',
+    'cardio': 'Cardio/Conditioning'
+  };
+
   const prompt = `Create a detailed, personalized weekly workout plan in HTML format for a fitness enthusiast with the following specifications:
 
 **User Profile:**
@@ -286,6 +315,7 @@ function createOpenAIPrompt(formData) {
 - Fitness Level: ${levelLabels[formData.fitnessLevel]}
 - Workout Frequency: ${formData.workoutDays} days per week
 - Session Duration: ${formData.workoutDuration} minutes per session
+- Target Muscle Group(s): ${formData.targetMuscle.map(m => muscleLabels[m]).join(', ')}
 - Available Equipment: ${formData.equipment.map(eq => equipmentLabels[eq]).join(', ')}
 
 **Additional Information:**
@@ -311,7 +341,7 @@ Return the response in clean HTML format with proper structure. Use semantic HTM
 - Proper formatting for easy reading
 
 **Important Notes:**
-- Ensure exercises are appropriate for the available equipment
+- Ensure exercises are appropriate for the available equipment and target muscle group(s)
 - Consider the user's fitness level for exercise selection and intensity
 - Include variety to prevent plateaus
 - Provide clear instructions for form and safety
@@ -334,6 +364,7 @@ async function callOpenAI(apiKey, prompt) {
         aiWorkoutDays: document.getElementById('aiWorkoutDays').value,
         aiFitnessLevel: document.getElementById('aiFitnessLevel').value,
         aiWorkoutDuration: document.getElementById('aiWorkoutDuration').value,
+        aiTargetMuscle: getSelectedMuscleGroups(),
         aiEquipment: getSelectedAiEquipment(),
         aiInjuries: document.getElementById('aiLimitations').value,
         aiPreferences: document.getElementById('aiAdditionalInfo').value
@@ -363,6 +394,7 @@ async function handleAiFormSubmit(e) {
     workoutDays: document.getElementById('aiWorkoutDays').value,
     fitnessLevel: document.getElementById('aiFitnessLevel').value,
     workoutDuration: document.getElementById('aiWorkoutDuration').value,
+    targetMuscle: getSelectedMuscleGroups(),
     equipment: getSelectedAiEquipment(),
     limitations: document.getElementById('aiLimitations').value.trim(),
     additionalInfo: document.getElementById('aiAdditionalInfo').value.trim()
@@ -400,6 +432,92 @@ async function handleAiFormSubmit(e) {
   }
 }
 
+// Add Chart.js loader if not present
+function loadChartJsIfNeeded(callback) {
+  if (window.Chart) {
+    callback();
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+function countMuscleGroups(days) {
+  // Muscle group keywords
+  const muscleGroups = {
+    'arms': [/arm/i, /bicep/i, /tricep/i],
+    'legs': [/leg/i, /quad/i, /hamstring/i, /calf/i],
+    'core': [/core/i, /abs/i, /abdominal/i, /plank/i, /oblique/i],
+    'back': [/back/i, /lat/i, /row/i, /pull-up/i],
+    'chest': [/chest/i, /pec/i, /push-up/i, /fly/i],
+    'shoulders': [/shoulder/i, /deltoid/i, /press/i],
+    'glutes': [/glute/i, /hip thrust/i, /bridge/i],
+    'cardio': [/cardio/i, /run/i, /sprint/i, /jump/i, /burpee/i, /mountain climber/i, /bike/i, /treadmill/i, /rower/i]
+  };
+  const counts = {};
+  Object.keys(muscleGroups).forEach(m => counts[m] = 0);
+  days.forEach(dayObj => {
+    const content = dayObj.content.toLowerCase();
+    Object.entries(muscleGroups).forEach(([muscle, patterns]) => {
+      patterns.forEach(pattern => {
+        if (pattern.test(content)) {
+          counts[muscle]++;
+        }
+      });
+    });
+  });
+  return counts;
+}
+
+function renderMuscleRadarChart(counts) {
+  loadChartJsIfNeeded(() => {
+    const ctx = document.getElementById('muscleRadarChart').getContext('2d');
+    if (window.muscleRadarChartInstance) {
+      window.muscleRadarChartInstance.destroy();
+    }
+    window.muscleRadarChartInstance = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Arms', 'Legs', 'Core', 'Back', 'Chest', 'Shoulders', 'Glutes', 'Cardio'],
+        datasets: [{
+          label: 'Targeted Days',
+          data: [
+            counts.arms,
+            counts.legs,
+            counts.core,
+            counts.back,
+            counts.chest,
+            counts.shoulders,
+            counts.glutes,
+            counts.cardio
+          ],
+          backgroundColor: 'rgba(245, 158, 11, 0.2)',
+          borderColor: 'rgba(245, 158, 11, 1)',
+          pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(245, 158, 11, 1)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Muscle Group Frequency (per week)' }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, precision: 0 }
+          }
+        }
+      }
+    });
+  });
+}
+
 function displayAiWorkoutPlan(formData, aiResponse) {
   // Update summary cards
   const goalLabels = {
@@ -431,25 +549,84 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     'full-gym': 'Full Gym Access'
   };
 
+  const muscleLabels = {
+    'full-body': 'Full Body',
+    'upper-body': 'Upper Body',
+    'lower-body': 'Lower Body',
+    'core': 'Core',
+    'arms': 'Arms',
+    'legs': 'Legs',
+    'back': 'Back',
+    'chest': 'Chest',
+    'shoulders': 'Shoulders',
+    'glutes': 'Glutes',
+    'cardio': 'Cardio/Conditioning'
+  };
+
   document.getElementById('aiGoalText').textContent = goalLabels[formData.fitnessGoal];
   document.getElementById('aiScheduleText').textContent = `${formData.workoutDays} days per week, ${formData.workoutDuration} minutes per session`;
   document.getElementById('aiEquipmentText').textContent = formData.equipment.map(eq => equipmentLabels[eq]).join(', ');
   document.getElementById('aiLevelText').textContent = levelLabels[formData.fitnessLevel];
+  // Optionally display muscle group in summary (add a new summary card if desired)
+  document.getElementById('aiMuscleText').textContent = formData.targetMuscle.map(m => muscleLabels[m]).join(', ');
 
   // --- New: Parse and format the AI response as a table sorted by day ---
   // This assumes the AI response contains day headings like "Day 1", "Day 2", etc.
   // We'll extract each day's section and build a table for each.
   let planHTML = '';
-  const dayRegex = /Day\s*(\d+)[^\n\r]*[\n\r]+([\s\S]*?)(?=Day\s*\d+|$)/gi;
-  let match;
+  let extraSectionsHTML = '';
+  // Extract and remove extra sections (Progression Tips, Safety Considerations, Expected Results Timeline)
+  const extraSections = [
+    { label: 'Progression Tips', regex: /(Progression Tips:?[\s\S]*?)(?=(Safety Considerations|Expected Results Timeline|$))/i },
+    { label: 'Safety Considerations', regex: /(Safety Considerations:?[\s\S]*?)(?=(Expected Results Timeline|$))/i },
+    { label: 'Expected Results Timeline', regex: /(Expected Results Timeline:?[\s\S]*)/i }
+  ];
+  let mainContent = aiResponse;
+  extraSections.forEach(section => {
+    const match = mainContent.match(section.regex);
+    if (match) {
+      extraSectionsHTML += `<div class="ai-extra-section"><h4>${section.label}</h4><div class="ai-extra-content">${match[1].replace(section.label + ':', '').trim()}</div></div>`;
+      mainContent = mainContent.replace(match[1], '');
+    }
+  });
+
+  // Improved day parsing with multiple patterns
+  const dayPatterns = [
+    /Day\s*(\d+)[^\n\r]*[\n\r]+([\s\S]*?)(?=Day\s*\d+|$)/gi,
+    /Day\s*(\d+):[^\n\r]*[\n\r]+([\s\S]*?)(?=Day\s*\d+:|$)/gi,
+    /Workout\s*Day\s*(\d+)[^\n\r]*[\n\r]+([\s\S]*?)(?=Workout\s*Day\s*\d+|$)/gi,
+    /(\d+)\.\s*Day[^\n\r]*[\n\r]+([\s\S]*?)(?=\d+\.\s*Day|$)/gi
+  ];
+  
   let days = [];
-  while ((match = dayRegex.exec(aiResponse)) !== null) {
-    days.push({
-      day: parseInt(match[1]),
-      content: match[2].trim()
-    });
+  let match;
+  
+  // Try each pattern until we find days
+  for (let pattern of dayPatterns) {
+    while ((match = pattern.exec(mainContent)) !== null) {
+      days.push({
+        day: parseInt(match[1]),
+        content: match[2].trim()
+      });
+    }
+    if (days.length > 0) break;
   }
+  
   days.sort((a, b) => a.day - b.day);
+  
+  // Validate that we have the correct number of days
+  const expectedDays = parseInt(formData.workoutDays);
+  if (days.length !== expectedDays) {
+    console.warn(`Expected ${expectedDays} days but found ${days.length} days in AI response`);
+    // If we don't have enough days, create placeholder days
+    while (days.length < expectedDays) {
+      const nextDay = days.length + 1;
+      days.push({
+        day: nextDay,
+        content: `Workout Day ${nextDay} - Content not properly parsed from AI response. Please regenerate the plan.`
+      });
+    }
+  }
 
   days.forEach(dayObj => {
     // Try to extract exercises as lines or list items
@@ -471,10 +648,27 @@ function displayAiWorkoutPlan(formData, aiResponse) {
     planHTML += `</tbody></table>`;
   });
   if (planHTML === '') {
-    // fallback: show original response
-    planHTML = aiResponse;
+    // fallback: show original response with warning
+    planHTML = `<div class="message warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Could not parse workout days from AI response. Showing raw response below:</span>
+    </div>
+    <div class="raw-response">${aiResponse}</div>`;
   }
-  aiWorkoutPlanContainer.innerHTML = planHTML;
+  
+  // Add validation message if days don't match
+  if (days.length !== expectedDays) {
+    planHTML = `<div class="message warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Warning: Expected ${expectedDays} workout days but found ${days.length}. Some days may be missing or incorrectly parsed.</span>
+    </div>` + planHTML;
+  }
+  document.getElementById('aiWorkoutPlan').innerHTML = planHTML;
+  document.getElementById('aiExtraSections').innerHTML = extraSectionsHTML;
+
+  // Radar chart: count muscle group frequency and render
+  const muscleCounts = countMuscleGroups(days);
+  renderMuscleRadarChart(muscleCounts);
 
   // Show results section
   aiResultsSection.classList.remove('hidden');
@@ -500,6 +694,7 @@ function regenerateAiPlan() {
   document.getElementById('aiWorkoutDays').value = lastAiFormData.workoutDays;
   document.getElementById('aiFitnessLevel').value = lastAiFormData.fitnessLevel;
   document.getElementById('aiWorkoutDuration').value = lastAiFormData.workoutDuration;
+  document.getElementById('aiTargetMuscle').value = lastAiFormData.targetMuscle;
   document.getElementById('aiLimitations').value = lastAiFormData.limitations;
   document.getElementById('aiAdditionalInfo').value = lastAiFormData.additionalInfo;
 
@@ -507,6 +702,12 @@ function regenerateAiPlan() {
   const checkboxes = document.querySelectorAll('#aiWorkoutForm input[type="checkbox"][value]');
   checkboxes.forEach(checkbox => {
     checkbox.checked = lastAiFormData.equipment.includes(checkbox.value);
+  });
+
+  // Re-check muscle group boxes
+  const muscleCheckboxes = document.querySelectorAll('.muscle-group-grid input[type="checkbox"][value]');
+  muscleCheckboxes.forEach(checkbox => {
+    checkbox.checked = lastAiFormData.targetMuscle.includes(checkbox.value);
   });
 
   showMessage('Form filled with previous data. Click "Generate AI Workout Plan" to create a new plan.', 'info');
@@ -522,6 +723,7 @@ Goal: ${document.getElementById('aiGoalText').textContent}
 Schedule: ${document.getElementById('aiScheduleText').textContent}
 Equipment: ${document.getElementById('aiEquipmentText').textContent}
 Level: ${document.getElementById('aiLevelText').textContent}
+Muscle Group: ${document.getElementById('aiMuscleText').textContent}
 
 ${planContent.replace(/<[^>]*>/g, '\n')}
   `;
@@ -545,6 +747,7 @@ ${document.getElementById('aiGoalText').textContent}
 ${document.getElementById('aiScheduleText').textContent}
 ${document.getElementById('aiEquipmentText').textContent}
 ${document.getElementById('aiLevelText').textContent}
+${document.getElementById('aiMuscleText').textContent}
 
 Generated by FitPlan Pro AI
   `;
